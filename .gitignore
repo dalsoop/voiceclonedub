@@ -1,12 +1,16 @@
 # VoiceCloneDub
-out/                 # rendered videos (large)
-work/                # intermediate STT/translation/synth artifacts
+# rendered videos + intermediate artifacts — not committed
+out/
+work/
 *.wav
 *.mp3
 *.mp4
 *.mov
-!examples/**         # but keep small example assets if any
-voiceclonedub.toml         # local config (may hold endpoints/keys)
+# …but DO keep the curated demo media committed under examples/
+!examples/
+!examples/**
+# local config may hold endpoints / keys
+voiceclonedub.toml
 .env
 
 # Python

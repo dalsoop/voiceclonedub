@@ -21,6 +21,9 @@ you already have (or can pull in two commands).
 
 ## See it in action
 
+▶ **[Play the actual renders](examples/)** — the same shorts re-voiced into English and Japanese,
+side by side (short-05 is the cleanest reference).
+
 One Korean lecture, re-voiced into three languages — **same voice, same timing**. Here's
 the very same moment in each (full text, nothing dropped):
 
