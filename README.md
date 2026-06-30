@@ -105,6 +105,29 @@ next to it.
 > **Voice reference (`--voice`)**: 5–15 seconds of clean speech of the target speaker
 > (you). The cleaner the sample, the closer the dub.
 
+## Use as a Claude Code plugin
+
+Prefer to drive it from [Claude Code](https://claude.com/claude-code)? VoiceCloneDub also ships as
+a plugin. Installing it adds a self-correcting **dub** skill and a **doctor** skill — no `pip`
+needed (the engine is standard-library Python; only local Whisper STT needs an extra install).
+
+```text
+/plugin marketplace add dalsoop/voiceclonedub
+/plugin install voiceclonedub@voiceclonedub
+```
+
+Then just ask:
+
+> dub this lecture into English and Japanese, in my voice — here's a reference clip.
+
+The **dub** skill runs the engine, reads the per-render quality scorecard, fixes only the segments
+that failed (re-translate / re-tighten / re-synthesize), and loops until every gate passes — then
+reports exactly what it produced. Run `/voiceclonedub:doctor` first to check ffmpeg and your
+backends.
+
+> The plugin makes the commands instant; the backends (ffmpeg, an Ollama model or two, a VoxCPM
+> TTS endpoint) still need to be running — `doctor` tells you precisely what's missing.
+
 ## Usage
 
 ```

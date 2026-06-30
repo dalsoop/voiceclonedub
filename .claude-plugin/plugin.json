@@ -1,0 +1,10 @@
+{
+  "name": "voiceclonedub",
+  "description": "Dub any video into another language in your own voice — local, subtitle-accurate sync, faithful translation — with a self-correcting quality-gate loop.",
+  "version": "0.1.0",
+  "author": { "name": "dalsoop" },
+  "homepage": "https://github.com/dalsoop/voiceclonedub",
+  "repository": "https://github.com/dalsoop/voiceclonedub",
+  "license": "MIT",
+  "keywords": ["dubbing", "tts", "voice-cloning", "translation", "video", "whisper", "ollama", "local"]
+}

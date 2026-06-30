@@ -1,0 +1,17 @@
+{
+  "name": "voiceclonedub",
+  "owner": { "name": "dalsoop" },
+  "description": "VoiceCloneDub — dub videos into another language in your own voice, fully local.",
+  "plugins": [
+    {
+      "name": "voiceclonedub",
+      "source": ".",
+      "description": "Dub any video into another language in your own voice (local, subtitle-accurate, faithful) with a self-correcting quality-gate loop.",
+      "version": "0.1.0",
+      "author": { "name": "dalsoop" },
+      "homepage": "https://github.com/dalsoop/voiceclonedub",
+      "license": "MIT",
+      "keywords": ["dubbing", "tts", "voice-cloning", "translation", "video", "local"]
+    }
+  ]
+}
