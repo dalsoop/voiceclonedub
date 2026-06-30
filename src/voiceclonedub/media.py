@@ -39,6 +39,46 @@ def lufs(path: str) -> float | None:
         return None
 
 
+def peak(path: str) -> float | None:
+    """Maximum sample peak in dBFS (via volumedetect), or None. 0 dBFS == full scale."""
+    r = _run(["ffmpeg", "-nostdin", "-i", path, "-af", "volumedetect", "-f", "null", "-"])
+    mm = re.findall(r"max_volume:\s*(-?\d+(?:\.\d+)?)\s*dB", (r.stderr or ""))
+    try:
+        return float(mm[-1]) if mm else None
+    except ValueError:
+        return None
+
+
+def peak_normalize(
+    src: str, dst: str, target_db: float = -1.5, max_gain_db: float = 6.0, sr: int = 48000
+) -> str:
+    """Transparent peak normalization: measure the track's peak and apply a single linear
+    gain so the peak sits at `target_db` dBFS, capping any *boost* at `max_gain_db`.
+
+    Unlike dynamic EBU R128 `loudnorm` (one-pass), this never compresses the signal, so it
+    introduces no pumping and does not amplify the noise floor / expose synth texture beyond
+    the cap. Attenuation (when the track is already hotter than the target) is uncapped."""
+    pk = peak(src)
+    gain = 0.0 if pk is None else min(target_db - pk, max_gain_db)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-nostdin",
+            "-y",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            src,
+            "-af",
+            f"volume={gain:.2f}dB,aresample={sr}",
+            dst,
+        ],
+        check=True,
+    )
+    return dst
+
+
 def streams(path: str) -> str:
     """Newline-joined codec_type list, e.g. contains 'video' and 'audio'."""
     return (

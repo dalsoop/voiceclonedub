@@ -61,10 +61,12 @@ def build_track(
     synth_fn: Callable[[int, str], str],
     max_compress: float = 1.45,
     too_fast: float = 1.30,
-    loudnorm: tuple[float, float, float] = (-16.0, -1.5, 11.0),
+    peak_db: float = -1.5,
+    max_gain_db: float = 6.0,
 ) -> tuple[str, dict]:
     """segs: [{start_ms,end_ms,text}] (1-based texts dict). synth_fn(idx, text)->wav path.
-    `loudnorm` = (I LUFS, TP dBTP, LRA) target for EBU R128 normalization. Returns (track, report)."""
+    Output is peak-normalized to `peak_db` dBFS (boost capped at `max_gain_db`) — transparent,
+    no dynamic loudnorm / pumping. Returns (track, report)."""
     os.makedirs(work_dir, exist_ok=True)
     n = len(segs)
     total = max((s["end_ms"] for s in segs), default=0) / 1000.0 + 0.4
@@ -126,13 +128,11 @@ def build_track(
         f"[{i}:a]adelay={int(positions[i] * 1000)}|{int(positions[i] * 1000)}[d{i}]"
         for i in range(n)
     ]
-    li, ltp, llra = loudnorm  # EBU R128 loudness normalization (else output is quiet/distant)
     fc.append(
         "".join(f"[d{i}]" for i in range(n))
-        + f"amix=inputs={n}:duration=longest:normalize=0,apad,atrim=0:{total:.3f},"
-        f"loudnorm=I={li}:TP={ltp}:LRA={llra},aresample=48000[o]"
+        + f"amix=inputs={n}:duration=longest:normalize=0,apad,atrim=0:{total:.3f}[o]"
     )
-    track = os.path.join(work_dir, "track.wav")
+    raw = os.path.join(work_dir, "track_raw.wav")
     subprocess.run(
         [
             "ffmpeg",
@@ -148,9 +148,13 @@ def build_track(
             "[o]",
             "-c:a",
             "pcm_s16le",
-            track,
+            raw,
         ],
         check=True,
+    )
+    # transparent peak normalization (no dynamic loudnorm -> no pumping / texture exposure)
+    track = media.peak_normalize(
+        raw, os.path.join(work_dir, "track.wav"), target_db=peak_db, max_gain_db=max_gain_db
     )
 
     report = {
@@ -159,6 +163,7 @@ def build_track(
         "word_trimmed": [r["i"] for r in rep if r["trim_s"] > 0.05],
         "big_gap": [i + 1 for i in range(n) if placed_gap[i] > 0.9],
         "drift_max": round(max(drifts) if drifts else 0.0, 2),
+        "out_peak_db": media.peak(track),
         "cues": rep,
     }
     return track, report

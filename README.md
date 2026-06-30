@@ -49,7 +49,7 @@ Every render also drops a JSON record next to the video with its gate results, e
 { "tgt": "en", "ok": true, "segs": 9,
   "gates": { "coverage": 1.0, "drift_max": 0.0, "overlap": [], "too_fast": [],
              "fidelity_errors": [], "word_trimmed": [],
-             "loudness": { "dub_lufs": -16.0, "orig_lufs": -21.5, "target": -16.0, "ok": true },
+             "loudness": { "dub_peak_db": -2.8, "target_peak_db": -1.5, "orig_lufs": -21.5, "ok": true },
              "artifact": { "out_exists": true, "has_video": true, "has_audio": true, "ok": true } } }
 ```
 
@@ -78,7 +78,7 @@ actually publish.
 - 🎙️ **Your own voice** via zero-shot TTS (a few seconds of reference audio).
 - ⏱️ **Isochrony / subtitle-anchor sync** — speech lands where you spoke it; **0 drift** by construction.
 - 🌍 **Faithful, length-aware translation** with a fidelity gate (negation/number/entity/omission checks).
-- 🧱 **Deterministic quality scorecard** — sync (drift, overlap), pace (too-fast, word-trimming), content (fidelity, coverage, negation), **loudness** (normalized & gated vs target/original), and **artifact integrity** (the versioned output really exists, with video+audio) — a run either passes or tells you exactly which metric failed.
+- 🧱 **Deterministic quality scorecard** — sync (drift, overlap), pace (too-fast, word-trimming), content (fidelity, coverage, negation), **loudness** (transparent peak-normalization, gated against clipping/near-silence), and **artifact integrity** (the versioned output really exists, with video+audio) — a run either passes or tells you exactly which metric failed.
 - ♻️ **Incremental + cached** — re-runs only re-translate/re-synthesize what changed.
 - 🗂️ **Versioned output + per-run records** — every render is timestamped and logged with its gate results; nothing is overwritten.
 - 🏠 **100% local & free** by default (Ollama + faster-whisper + VoxCPM). Bring-your-own OpenAI-compatible endpoints if you prefer.

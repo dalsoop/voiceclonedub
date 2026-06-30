@@ -45,9 +45,8 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         "max_compress": 1.45,
         "min_coverage": 0.85,
         "max_drift_s": 0.5,
-        "lufs_target": -16.0,
-        "tp": -1.5,
-        "lra": 11.0,
+        "peak_db": -1.5,
+        "max_gain_db": 6.0,
     },
     "merge": {"break_gap": 0.35, "hard_gap": 0.6, "max_dur": 4.5, "max_chars": 70, "min_dur": 1.2},
 }

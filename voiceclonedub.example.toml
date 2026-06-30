@@ -40,9 +40,8 @@ fill           = false                     # don't time-stretch short lines (avo
 max_compress   = 1.45                      # compress over-long lines up to this (compress, don't cut)
 min_coverage   = 0.85                      # STT re-transcription coverage gate
 max_drift_s    = 0.5                       # hard drift gate
-lufs_target    = -16.0                     # loudness-normalize output to this (EBU R128) + gate near it
-tp             = -1.5                      # true-peak ceiling (no clipping)
-lra            = 11.0                      # loudness range
+peak_db        = -1.5                      # transparent peak-normalize output to this dBFS
+max_gain_db    = 6.0                       # cap on boost (avoids amplifying noise / synth texture)
 
 [merge]
 break_gap = 0.35

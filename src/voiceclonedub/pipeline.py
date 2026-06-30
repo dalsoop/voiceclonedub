@@ -141,12 +141,19 @@ def dub(
 
     # 6) subtitle-anchor synth + refit loop (only re-tighten lines too fast for their slot)
     a = cfg["align"]
-    ln = (a.get("lufs_target", -16.0), a.get("tp", -1.5), a.get("lra", 11.0))
+    peak_db = a.get("peak_db", -1.5)
+    max_gain = a.get("max_gain_db", 6.0)
     last: dict[str, Any] = {}
     track = ""
     for rd in range(rounds):  # noqa: B007 — rd reused after the loop as the round count
         track, last = align.build_track(
-            segs, texts, work, synth_fn, max_compress=a["max_compress"], loudnorm=ln
+            segs,
+            texts,
+            work,
+            synth_fn,
+            max_compress=a["max_compress"],
+            peak_db=peak_db,
+            max_gain_db=max_gain,
         )
         fast = set(last["too_fast"]) | set(last["overlap"]) | set(last["word_trimmed"])
         if not fast:
@@ -159,8 +166,10 @@ def dub(
     empty = _empty_ids(segs, texts)
     cov, cov_miss = _coverage(track, tgt, segs, texts, cfg["stt"])
     nwarn = backends.neg_warn(segs, texts, src=src or "")
-    dub_lufs, orig_lufs = media.lufs(track), media.lufs(src_audio)  # loudness vs original + target
-    loud_ok = (dub_lufs is None) or abs(dub_lufs - ln[0]) <= 2.0
+    dub_peak = media.peak(track)  # output peak (dBFS) — the metric the transparent norm targets
+    dub_lufs, orig_lufs = media.lufs(track), media.lufs(src_audio)  # loudness vs original (info)
+    # peak gate blocks only clipping / near-silence; level is set transparently, not forced
+    loud_ok = (dub_peak is None) or (-14.0 <= dub_peak <= -0.3)
     ok = (
         not empty
         and not last["overlap"]
@@ -181,7 +190,14 @@ def dub(
         "coverage_miss": cov_miss,
         "drift_max": last["drift_max"],
         "big_gap_info": last["big_gap"],
-        "loudness": {"dub_lufs": dub_lufs, "orig_lufs": orig_lufs, "target": ln[0], "ok": loud_ok},
+        "loudness": {
+            "dub_peak_db": dub_peak,
+            "target_peak_db": peak_db,
+            "max_gain_db": max_gain,
+            "dub_lufs": dub_lufs,
+            "orig_lufs": orig_lufs,
+            "ok": loud_ok,
+        },
     }
 
     # 8) mux -> versioned output + record (+ artifact existence/integrity gate)
