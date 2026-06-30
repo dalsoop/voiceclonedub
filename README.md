@@ -191,10 +191,13 @@ flowchart TB
 
 The interesting parts, and *why* they exist:
 
-1. **Cue merge + de-hallucination.** Raw STT emits sub-second cues and sometimes
-   *repeats a line* (a classic Whisper hallucination). VoiceCloneDub merges cues into
-   sentence-level segments and drops adjacent near-duplicates, so you never hear the same
-   phrase twice or get two voices overlapping.
+1. **Clean the transcript before anything else reads it.** The audio is first extracted to
+   16 kHz mono — Whisper's native format — so STT starts from the input it was trained on.
+   Raw STT still emits sub-second cues and sometimes *repeats a line* (a classic Whisper
+   hallucination); VoiceCloneDub merges cues into sentence-level segments and drops adjacent
+   near-duplicates **deterministically**, so you never hear the same phrase twice or get two
+   voices overlapping. The translator only ever sees clean sentences — it is never asked to
+   *clean up garbage and translate in the same breath*.
 
 2. **Faithful translation, not summarization.** Translation is done one line at a time by
    a translation-specialist model (TranslateGemma by default). General chat LLMs quietly
@@ -214,6 +217,30 @@ The interesting parts, and *why* they exist:
    (no empty/dropped lines, no overlap, nothing too-fast or word-trimmed, STT coverage ≥
    0.85, drift ≤ 0.5s). Otherwise it tells you exactly which segments failed, so the loop
    (or you) can fix just those.
+
+## Getting good results
+
+Quality is mostly decided *before* translation even starts — by the input and a couple of flags:
+
+- **Input audio is the biggest lever.** Clean, single-speaker speech (a lecture, a talking-head
+  video, a one-host podcast) transcribes far better than music, crowd noise, or overlapping
+  speakers. If the source is noisy, expect more lines to get flagged.
+- **Tell it the source language.** Pass `--from ko` (or whatever it is) instead of relying on
+  auto-detection — it removes a whole class of mis-detection and mid-clip language-switch
+  errors, especially for non-English audio.
+- **Let it do the boring-but-critical prep.** No need to pre-process anything: it extracts
+  16 kHz mono audio (Whisper's native format), de-hallucinates repeated/fragmented cues, and
+  merges them into sentence-level segments before the translator sees a thing.
+- **It surfaces mistakes instead of hiding them.** A misheard word can't be magicked back, but
+  it won't be shipped silently either: the coverage gate re-transcribes the output and
+  fuzzy-matches each line, the negation checker and fidelity judge catch dropped meaning, and
+  the run record names the exact segments that need a human look.
+- **Accuracy vs. speed.** The default Whisper `large-v3` is the most accurate; smaller models
+  (`medium`, `small`) are faster but transcribe worse — fine for quick drafts, not final cuts.
+
+> The throughline: each stage does **one** job, structural noise is removed deterministically
+> before any model reads it, and a model's output is *verified* rather than trusted — which is
+> why results hold up instead of degrading line after line.
 
 ## Configuration
 
