@@ -1,5 +1,5 @@
 """Orchestrator: video -> STT -> merge -> faithful translate -> fidelity gate ->
-subtitle-anchor synth (refit loop) -> quality gates -> mux + versioned record.
+subtitle-anchor synth -> quality gates -> mux + versioned record.
 """
 
 from __future__ import annotations
@@ -10,7 +10,6 @@ import json
 import os
 import re
 import time
-from typing import Any
 
 from . import align, backends, media, merge, srt
 
@@ -80,7 +79,6 @@ def dub(
     cfg: dict,
     src: str | None = None,
     voice: str | None = None,
-    rounds: int = 3,
     out_dir: str = "out",
     work_root: str = "work",
 ) -> dict:
@@ -139,28 +137,20 @@ def dub(
             media.to_wav(tmp, cached, sr=48000, mono=True)
         return cached
 
-    # 6) subtitle-anchor synth + refit loop (only re-tighten lines too fast for their slot)
+    # 6) subtitle-anchor synth (single pass — translation is already corrected above; over-long
+    #    lines are compressed/trimmed deterministically inside build_track, no refit loop)
     a = cfg["align"]
     peak_db = a.get("peak_db", -1.5)
     max_gain = a.get("max_gain_db", 6.0)
-    last: dict[str, Any] = {}
-    track = ""
-    for rd in range(rounds):  # noqa: B007 — rd reused after the loop as the round count
-        track, last = align.build_track(
-            segs,
-            texts,
-            work,
-            synth_fn,
-            max_compress=a["max_compress"],
-            peak_db=peak_db,
-            max_gain_db=max_gain,
-        )
-        fast = set(last["too_fast"]) | set(last["overlap"]) | set(last["word_trimmed"])
-        if not fast:
-            break
-        texts.update(
-            _translate_all(cfg["translate"], segs, tgt, idxs=sorted(fast), concise=True, src=src)
-        )
+    track, last = align.build_track(
+        segs,
+        texts,
+        work,
+        synth_fn,
+        max_compress=a["max_compress"],
+        peak_db=peak_db,
+        max_gain_db=max_gain,
+    )
 
     # 7) gates — multi-metric quality scorecard
     empty = _empty_ids(segs, texts)
@@ -229,7 +219,6 @@ def dub(
         "src": src,
         "tgt": tgt,
         "segs": len(segs),
-        "rounds": rd + 1,
         "ok": ok,
         "gates": gates,
         "out": out_path,

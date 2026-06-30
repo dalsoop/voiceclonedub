@@ -1,6 +1,6 @@
 {
   "name": "voiceclonedub",
-  "description": "Dub any video into another language in your own voice — local, subtitle-accurate sync, faithful translation — with a self-correcting quality-gate loop.",
+  "description": "Dub any video into another language in your own voice — local, subtitle-accurate sync, faithful translation, deterministic quality scorecard.",
   "version": "0.1.0",
   "author": { "name": "dalsoop" },
   "homepage": "https://github.com/dalsoop/voiceclonedub",

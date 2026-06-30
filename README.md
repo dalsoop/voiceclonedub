@@ -108,8 +108,8 @@ next to it.
 ## Use as a Claude Code plugin
 
 Prefer to drive it from [Claude Code](https://claude.com/claude-code)? VoiceCloneDub also ships as
-a plugin. Installing it adds a self-correcting **dub** skill and a **doctor** skill — no `pip`
-needed (the engine is standard-library Python; only local Whisper STT needs an extra install).
+a plugin. Installing it adds a **dub** skill and a **doctor** skill — no `pip` needed (the engine
+is standard-library Python; only local Whisper STT needs an extra install).
 
 ```text
 /plugin marketplace add dalsoop/voiceclonedub
@@ -120,10 +120,9 @@ Then just ask:
 
 > dub this lecture into English and Japanese, in my voice — here's a reference clip.
 
-The **dub** skill runs the engine, reads the per-render quality scorecard, fixes only the segments
-that failed (re-translate / re-tighten / re-synthesize), and loops until every gate passes — then
-reports exactly what it produced. Run `/voiceclonedub:doctor` first to check ffmpeg and your
-backends.
+The **dub** skill runs the engine, reads the per-render quality scorecard, and reports exactly what
+it produced — the output path and which gates passed or failed (so you know precisely what to
+adjust). Run `/voiceclonedub:doctor` first to check ffmpeg and your backends.
 
 > The plugin makes the commands instant; the backends (ffmpeg, an Ollama model or two, a VoxCPM
 > TTS endpoint) still need to be running — `doctor` tells you precisely what's missing.
@@ -136,7 +135,6 @@ dub INPUT.mp4 --to en [--from ko] [--voice ref.wav] [options]
   --from LANG        source language (default: auto-detect)
   --to LANG          target language(s), comma-separated (e.g. en,ja)
   --voice PATH       reference audio for voice cloning
-  --rounds N         max refit rounds (default: 3)
   --config PATH      config file (default: ./voiceclonedub.toml then ~/.config/voiceclonedub.toml)
   --out DIR          output directory (default: ./out)
 ```
@@ -145,8 +143,11 @@ Examples:
 
 ```bash
 dub talk.mp4 --to en,ja --voice me.wav           # English + Japanese
-dub lecture.mov --from ko --to en --rounds 4     # more refit passes
+dub lecture.mov --from ko --to en                # single source language
 ```
+
+Ready-to-run samples (input video + dubbed result + gate record) live in
+[`examples/`](examples/).
 
 ## How it works
 
@@ -215,8 +216,9 @@ The interesting parts, and *why* they exist:
 
 4. **Deterministic gates.** A render reports `ok: true` only if it passes every hard gate
    (no empty/dropped lines, no overlap, nothing too-fast or word-trimmed, STT coverage ≥
-   0.85, drift ≤ 0.5s). Otherwise it tells you exactly which segments failed, so the loop
-   (or you) can fix just those.
+   0.85, drift ≤ 0.5s). Otherwise it names exactly which segments failed and which gate, so you
+   know precisely what to adjust. (Translation still self-corrects: empty lines and lines the
+   fidelity judge flags get re-translated automatically.)
 
 ## Getting good results
 

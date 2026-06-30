@@ -21,7 +21,6 @@ def main(argv: list[str] | None = None) -> int:
         "--from", dest="src", default=None, help="source language (default: auto-detect)"
     )
     ap.add_argument("--voice", default=None, help="reference audio (wav) for voice cloning")
-    ap.add_argument("--rounds", type=int, default=3, help="max refit rounds (default: 3)")
     ap.add_argument("--config", default=None, help="config file (default: ./voiceclonedub.toml)")
     ap.add_argument("--out", default="out", help="output directory (default: ./out)")
     ap.add_argument("--version", action="version", version=f"voiceclonedub {__version__}")
@@ -39,7 +38,6 @@ def main(argv: list[str] | None = None) -> int:
                 cfg,
                 src=args.src,
                 voice=args.voice,
-                rounds=args.rounds,
                 out_dir=args.out,
             )
         except Exception as e:
