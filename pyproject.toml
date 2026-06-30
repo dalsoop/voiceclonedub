@@ -12,19 +12,34 @@ license = { text = "MIT" }
 authors = [{ name = "dalsoop" }]
 keywords = ["dubbing", "tts", "voice-cloning", "translation", "video", "isochrony", "whisper", "ollama", "local"]
 classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "License :: OSI Approved :: MIT License",
   "Topic :: Multimedia :: Sound/Audio :: Speech",
   "Topic :: Multimedia :: Video",
+  "Typing :: Typed",
 ]
 dependencies = [
   "requests>=2.28",
+  "tomli>=2.0; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
 # default local backends — install what you actually use
 whisper = ["faster-whisper>=1.0"]
 all = ["faster-whisper>=1.0"]
+# developer tooling — `pip install -e '.[dev]'`
+dev = [
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+]
 
 [project.scripts]
 dub = "voiceclonedub.cli:main"
@@ -32,6 +47,39 @@ dub = "voiceclonedub.cli:main"
 [project.urls]
 Homepage = "https://github.com/dalsoop/voiceclonedub"
 Repository = "https://github.com/dalsoop/voiceclonedub"
+Issues = "https://github.com/dalsoop/voiceclonedub/issues"
 
-[tool.setuptools]
-packages = ["voiceclonedub"]
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+voiceclonedub = ["py.typed"]
+
+# ----------------------------------------------------------------- tooling
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = [
+  "E501",    # line length is owned by the formatter
+  "RUF001",  # ambiguous unicode (intentional CJK markers in regexes/comments)
+  "RUF002",
+  "RUF003",
+]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src"]
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

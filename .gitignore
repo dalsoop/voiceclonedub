@@ -19,6 +19,10 @@ dist/
 .venv/
 venv/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
 # OS / editors
 .DS_Store

@@ -2,26 +2,29 @@
 hallucinations. Larger time windows = translations fit without over-compression;
 de-duplication prevents the "same line spoken twice / two overlapping voices" artifact.
 """
-import re
+
+from __future__ import annotations
+
 import difflib
+import re
 
 SENT_END = re.compile(r"[.!?。！？…]['\"”’)]?\s*$")
 
 
-def _ends_sentence(t):
+def _ends_sentence(t: str) -> bool:
     return bool(SENT_END.search((t or "").strip()))
 
 
-def _norm(t):
+def _norm(t: str) -> str:
     return re.sub(r"[\s.,!?。！？…'\"”’)(]+", "", (t or "")).lower()
 
 
-def _collapse_rep(t):
+def _collapse_rep(t: str) -> str:
     """Collapse immediate intra-cue repetition: 'A. A. A.' -> 'A.'"""
     parts = re.split(r"(?<=[.!?。！？…])\s+", (t or "").strip())
     if len(parts) <= 1:
         return t
-    res = []
+    res: list[str] = []
     for p in parts:
         if res and _norm(p) and _norm(p) == _norm(res[-1]):
             continue
@@ -29,10 +32,10 @@ def _collapse_rep(t):
     return " ".join(res)
 
 
-def clean_cues(cues):
+def clean_cues(cues: list[dict]) -> list[dict]:
     """Drop adjacent near-duplicate cues (hallucination) + collapse intra-cue repeats.
     Conservative: emphasis repeats (different wording / large gap) are kept (sim>=0.90)."""
-    out = []
+    out: list[dict] = []
     for c in cues:
         n = _norm(c["text"])
         if not n:
@@ -51,22 +54,33 @@ def clean_cues(cues):
     return out
 
 
-def merge(cues, break_gap=0.35, hard_gap=0.6, max_dur=4.5, max_chars=70, min_dur=1.2):
+def merge(
+    cues: list[dict],
+    break_gap: float = 0.35,
+    hard_gap: float = 0.6,
+    max_dur: float = 4.5,
+    max_chars: int = 70,
+    min_dur: float = 1.2,
+) -> list[dict]:
     """Group cleaned cues into sentence/utterance segments.
     Segment start = first cue start, end = last cue end (preserves original timing)."""
     cues = clean_cues(cues)
     if not cues:
         return []
 
-    segs, cur = [], [cues[0]]
+    segs: list[list[dict]] = []
+    cur = [cues[0]]
     for i in range(1, len(cues)):
         prev, c = cues[i - 1], cues[i]
         gap = (c["start_ms"] - prev["end_ms"]) / 1000.0
         seg_dur = (prev["end_ms"] - cur[0]["start_ms"]) / 1000.0
         seg_chars = sum(len(x["text"]) for x in cur)
-        brk = (gap >= hard_gap
-               or (_ends_sentence(prev["text"]) and gap >= break_gap)
-               or seg_dur >= max_dur or seg_chars >= max_chars)
+        brk = (
+            gap >= hard_gap
+            or (_ends_sentence(prev["text"]) and gap >= break_gap)
+            or seg_dur >= max_dur
+            or seg_chars >= max_chars
+        )
         if brk:
             segs.append(cur)
             cur = [c]
@@ -75,8 +89,9 @@ def merge(cues, break_gap=0.35, hard_gap=0.6, max_dur=4.5, max_chars=70, min_dur
     segs.append(cur)
 
     # Absorb sub-min_dur orphan segments into a neighbor (prepend to next / append to prev).
-    def d(g):
+    def d(g: list[dict]) -> float:
         return (g[-1]["end_ms"] - g[0]["start_ms"]) / 1000.0
+
     changed = True
     while changed and len(segs) > 1:
         changed = False
@@ -97,7 +112,7 @@ def merge(cues, break_gap=0.35, hard_gap=0.6, max_dur=4.5, max_chars=70, min_dur
             changed = True
             break
 
-    out = []
+    out: list[dict] = []
     for group in segs:
         text = " ".join(x["text"].strip() for x in group if x["text"].strip())
         out.append({"start_ms": group[0]["start_ms"], "end_ms": group[-1]["end_ms"], "text": text})

@@ -1,5 +1,11 @@
 # VoiceCloneDub
 
+[![CI](https://github.com/dalsoop/voiceclonedub/actions/workflows/ci.yml/badge.svg)](https://github.com/dalsoop/voiceclonedub/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Code style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with mypy](https://img.shields.io/badge/mypy-checked-2a6db2.svg)](https://mypy-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **Dub any video into another language — in your own voice. Fully local. Free.**
 
 VoiceCloneDub takes a talking-head video, transcribes it, translates it faithfully, and
@@ -228,6 +234,24 @@ endpoint and VoiceCloneDub will use them as-is.
 - [ ] Web UI
 - [ ] More TTS backends (XTTS, F5-TTS) behind the same interface
 - [ ] Lip-sync (mouth) alignment pass
+
+## Development
+
+```bash
+git clone https://github.com/dalsoop/voiceclonedub
+cd voiceclonedub
+pip install -e ".[dev]"                  # ruff + mypy + pytest
+
+ruff check . && ruff format --check .     # lint + format
+mypy src                                  # type-check
+pytest                                    # unit tests
+
+pre-commit install                        # optional: run ruff on every commit
+```
+
+The project uses a `src/` layout, is fully type-hinted (PEP 561 `py.typed`), and ships a
+GitHub Actions workflow that runs ruff, mypy, and pytest on Python 3.10–3.13 for every push
+and pull request.
 
 ## License
 
