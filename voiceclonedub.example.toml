@@ -1,0 +1,52 @@
+# VoiceCloneDub configuration. Copy to `voiceclonedub.toml` and edit.
+# Every stage is a pluggable backend. Defaults target a local Ollama + faster-whisper +
+# VoxCPM stack. Point any backend at an OpenAI-compatible endpoint to use your own server.
+
+[translate]
+# Faithful, translation-specialist model. TranslateGemma handles negation/nuance that
+# general chat LLMs drop. Per-line translation (most accurate).
+backend  = "ollama"                       # "ollama" | "openai"
+model    = "translategemma:12b"
+endpoint = "http://localhost:11434/v1"    # Ollama's OpenAI-compatible API
+# api_key = "..."                         # only if your endpoint needs one
+
+[judge]
+# Independent fidelity judge: catches dropped negation / wrong number / missing clause.
+# Any small instruct model works; it only flags lines, it doesn't translate.
+backend  = "ollama"
+model    = "qwen3:8b"
+endpoint = "http://localhost:11434/v1"
+
+[stt]
+# Transcription. "faster-whisper" runs locally (pip install faster-whisper),
+# or point at an OpenAI-compatible /audio/transcriptions endpoint.
+backend  = "faster-whisper"               # "faster-whisper" | "openai"
+model    = "large-v3"
+# endpoint = "http://localhost:8000/v1"
+# device   = "auto"                       # "cuda" | "cpu" | "auto"
+
+[tts]
+# Your-voice synthesis. VoxCPM does zero-shot cloning from a reference clip.
+backend  = "voxcpm"                       # "voxcpm" | "openai"
+# endpoint = "http://localhost:8080"      # self-hosted VoxCPM/OpenAI-compatible TTS
+cfg      = 1.9
+steps    = 40
+takes    = 2                              # synth N takes, keep the cleanest
+
+[align]
+# Subtitle-anchor placement. Defaults give 0-drift subtitle-style sync.
+gap_cap        = 0.0                       # 0 = pure anchor (recommended)
+fill           = false                     # don't time-stretch short lines (avoids sluggishness)
+max_compress   = 1.45                      # compress over-long lines up to this (compress, don't cut)
+min_coverage   = 0.85                      # STT re-transcription coverage gate
+max_drift_s    = 0.5                       # hard drift gate
+lufs_target    = -16.0                     # loudness-normalize output to this (EBU R128) + gate near it
+tp             = -1.5                      # true-peak ceiling (no clipping)
+lra            = 11.0                      # loudness range
+
+[merge]
+break_gap = 0.35
+hard_gap  = 0.6
+max_dur   = 4.5
+max_chars = 70
+min_dur   = 1.2
