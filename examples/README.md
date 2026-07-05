@@ -24,9 +24,13 @@ moves, and it's recognizably the same voice.
 
 ## Reproduce / add your own
 
+A ready-to-use voice reference ships here too: [`voice-reference.wav`](voice-reference.wav)
+— a ~10s clean clip of the author's voice, exactly the kind of sample `--voice` wants. Every
+English/Japanese render above was cloned from it. Swap in your own to hear the shorts in *your* voice.
+
 ```bash
 # CLI (short-01 keeps its Korean source)
-dub examples/short-01/source-ko.mp4 --from ko --to en,ja --voice my_voice.wav --out examples/short-01
+dub examples/short-01/source-ko.mp4 --from ko --to en,ja --voice examples/voice-reference.wav --out examples/short-01
 
 # …or from Claude Code with the plugin installed
 #   "dub this short into English and Japanese, in this voice"

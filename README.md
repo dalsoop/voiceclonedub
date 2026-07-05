@@ -106,7 +106,8 @@ Output lands in `out/<video>/en-<timestamp>.mp4` with a JSON record of every gat
 next to it.
 
 > **Voice reference (`--voice`)**: 5–15 seconds of clean speech of the target speaker
-> (you). The cleaner the sample, the closer the dub.
+> (you). The cleaner the sample, the closer the dub. A ready-made ~10s sample ships at
+> [`examples/voice-reference.wav`](examples/voice-reference.wav) — try it first, then swap in your own.
 
 ## Use as a Claude Code plugin
 
