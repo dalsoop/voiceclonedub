@@ -21,8 +21,25 @@ you already have (or can pull in two commands).
 
 ## See it in action
 
-▶ **[Play the actual renders](examples/)** — the same shorts re-voiced into English and Japanese,
-side by side (short-05 is the cleanest reference).
+The same short — **short-05** — re-voiced from Korean into English and Japanese. Same voice, same
+timing. Press play (audio on):
+
+<table>
+<tr>
+<td width="50%"><b>🇺🇸 English</b><br/>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/en.mp4
+
+</td>
+<td width="50%"><b>🇯🇵 Japanese</b><br/>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/ja.mp4
+
+</td>
+</tr>
+</table>
+
+▶ **[More renders + play them all](examples/)** — short-01/03/04 in English and Japanese too.
 
 One Korean lecture, re-voiced into three languages — **same voice, same timing**. Here's
 the very same moment in each (full text, nothing dropped):

@@ -6,12 +6,65 @@ Real renders you can play and compare — the **same short, re-voiced into each 
 
 Click a cell to play it on GitHub. **short-05** is the cleanest reference render.
 
-| Short | 🇰🇷 Korean (source) | 🇺🇸 English | 🇯🇵 Japanese |
-|-------|---------------------|-------------|--------------|
-| **short-05** ⭐ | — | [▶ en](short-05/en.mp4) | [▶ ja](short-05/ja.mp4) |
-| short-01 | [▶ ko](short-01/source-ko.mp4) | [▶ en](short-01/en.mp4) | [▶ ja](short-01/ja.mp4) |
-| short-03 | — | [▶ en](short-03/en.mp4) | [▶ ja](short-03/ja.mp4) |
-| short-04 | — | [▶ en](short-04/en.mp4) | [▶ ja](short-04/ja.mp4) |
+<table>
+<tr><th>Short</th><th>🇺🇸 English</th><th>🇯🇵 Japanese</th></tr>
+
+<tr>
+<td><b>short-05</b> ⭐</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/en.mp4
+
+</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/ja.mp4
+
+</td>
+</tr>
+
+<tr>
+<td><b>short-01</b><br/><sub><a href="short-01/source-ko.mp4">🇰🇷 source</a></sub></td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-01/en.mp4
+
+</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-01/ja.mp4
+
+</td>
+</tr>
+
+<tr>
+<td><b>short-03</b></td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-03/en.mp4
+
+</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-03/ja.mp4
+
+</td>
+</tr>
+
+<tr>
+<td><b>short-04</b></td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-04/en.mp4
+
+</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-04/ja.mp4
+
+</td>
+</tr>
+</table>
 
 > **Notes.** The Korean source video is kept only for **short-01** (every dub already carries the
 > original footage with re-voiced audio, so a separate source isn't needed to watch the result).
