@@ -4,13 +4,27 @@ Real renders you can play and compare — the **same short, re-voiced into each 
 
 ## Compare the dubs
 
-Click a cell to play it on GitHub. **short-05** is the cleanest reference render.
+Click a cell to play it on GitHub. **short-08** (clean diagram slides) is the best reference render.
 
 <table>
 <tr><th>Short</th><th>🇺🇸 English</th><th>🇯🇵 Japanese</th></tr>
 
 <tr>
-<td><b>short-05</b> ⭐</td>
+<td><b>short-08</b> ⭐<br/><sub>clean diagram slides</sub></td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-08/en.mp4
+
+</td>
+<td>
+
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-08/ja.mp4
+
+</td>
+</tr>
+
+<tr>
+<td><b>short-05</b></td>
 <td>
 
 https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/en.mp4

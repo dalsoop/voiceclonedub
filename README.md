@@ -21,25 +21,31 @@ you already have (or can pull in two commands).
 
 ## See it in action
 
-The same short — **short-05** — re-voiced from Korean into English and Japanese. Same voice, same
-timing. Press play (audio on):
+![One lecture, re-voiced into Korean, English and Japanese — same slides, same timing, only the voice changes](examples/screenshots/voices-hero.png)
+
+> Same lecture, same on-screen slides, same timing — **only the voice track changes.** The three
+> waveforms are the actual audio: the Korean original, then English and Japanese re-voiced in the
+> *same cloned voice*. A dub is an audio layer, so a still frame looks identical across languages —
+> the difference is what you *hear*.
+
+**Hear it** — the same moment, dubbed (press play, audio on):
 
 <table>
 <tr>
 <td width="50%"><b>🇺🇸 English</b><br/>
 
-https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/en.mp4
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-08/en.mp4
 
 </td>
 <td width="50%"><b>🇯🇵 Japanese</b><br/>
 
-https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-05/ja.mp4
+https://github.com/dalsoop/voiceclonedub/raw/main/examples/short-08/ja.mp4
 
 </td>
 </tr>
 </table>
 
-▶ **[More renders + play them all](examples/)** — short-01/03/04 in English and Japanese too.
+▶ **[More renders + play them all](examples/)** — short-01/03/04/05 in English and Japanese too.
 
 One Korean lecture, re-voiced into three languages — **same voice, same timing**. Here's
 the very same moment in each (full text, nothing dropped):
